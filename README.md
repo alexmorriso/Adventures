@@ -23,14 +23,12 @@ For detailed instructions see:
 
 2. **Set up environment variables**
 
+   Create a `.env` file at the project root and provide your keys:
+
    ```bash
-   npx hardhat vars set MNEMONIC
-
-   # Set your Infura API key for network access
-   npx hardhat vars set INFURA_API_KEY
-
-   # Optional: Set Etherscan API key for contract verification
-   npx hardhat vars set ETHERSCAN_API_KEY
+   INFURA_API_KEY=your_infura_project_id
+   PRIVATE_KEY=0xyour_wallet_private_key
+   ETHERSCAN_API_KEY=optional_key_for_verification
    ```
 
 3. **Compile and test**
@@ -70,7 +68,7 @@ For detailed instructions see:
 ```
 fhevm-hardhat-template/
 ├── contracts/           # Smart contract source files
-│   └── FHECounter.sol   # Example FHE counter contract
+│   └── AdventureGame.sol   # Encrypted adventure game contract
 ├── deploy/              # Deployment scripts
 ├── tasks/               # Hardhat custom tasks
 ├── test/                # Test files
