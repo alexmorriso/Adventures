@@ -309,17 +309,363 @@ Ensure you have the following installed:
 - **MetaMask** or compatible Web3 wallet
 - **Sepolia ETH**: For testnet deployment and transactions ([Faucet](https://sepoliafaucet.com/))
 
+### Backend Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/Adventures.git
+   cd Adventures
+   ```
+
+2. **Install backend dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+   Create a `.env` file at the project root:
+
+   ```bash
+   INFURA_API_KEY=your_infura_project_id
+   PRIVATE_KEY=0xyour_wallet_private_key
+   ETHERSCAN_API_KEY=optional_key_for_verification
+   ```
+
+   - **INFURA_API_KEY**: Get from [Infura](https://infura.io/)
+   - **PRIVATE_KEY**: Your wallet's private key (DO NOT share this!)
+   - **ETHERSCAN_API_KEY**: Get from [Etherscan](https://etherscan.io/apis)
+
+4. **Compile smart contracts**
+
+   ```bash
+   npm run compile
+   ```
+
+5. **Run tests**
+
+   ```bash
+   npm run test
+   ```
+
+### Frontend Installation
+
+1. **Navigate to frontend directory**
+
+   ```bash
+   cd home
+   ```
+
+2. **Install frontend dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   The frontend will be available at `http://localhost:5173`
+
+### Deployment
+
+#### Deploy to Local Hardhat Network
+
+1. **Start local FHEVM node**
+
+   ```bash
+   npm run chain
+   ```
+
+2. **Deploy contracts** (in a new terminal)
+
+   ```bash
+   npm run deploy:localhost
+   ```
+
+#### Deploy to Sepolia Testnet
+
+1. **Ensure you have Sepolia ETH** in your wallet
+
+2. **Deploy to Sepolia**
+
+   ```bash
+   npm run deploy:sepolia
+   ```
+
+3. **Verify contract on Etherscan**
+
+   ```bash
+   npm run verify:sepolia <CONTRACT_ADDRESS>
+   ```
+
+4. **Update frontend configuration**
+
+   Edit `home/src/config/contract.ts` with your deployed contract address.
+
+---
+
+## How It Works
+
+### Gameplay Flow
+
+1. **Connect Wallet**
+   - Player connects their Web3 wallet (MetaMask, WalletConnect, etc.)
+   - Wallet is verified to be on Sepolia testnet
+
+2. **Join Adventure**
+   - Player calls `joinGame()` function
+   - Smart contract generates encrypted weapon power (20-100 range)
+   - Player receives 100 encrypted coins as starting balance
+   - All values are encrypted using FHE and stored on-chain
+
+3. **Attack Monsters**
+   - Player calls `attackMonster()` function
+   - Contract generates random coin loot (10-50 range)
+   - Loot is added to player's encrypted coin balance using FHE addition
+   - Player cannot see exact loot amount until decryption
+
+4. **View Private Stats**
+   - Frontend retrieves encrypted handles from contract
+   - Player signs a decryption request with their wallet
+   - Zama Relayer SDK decrypts values client-side
+   - Private stats are displayed only to the player
+
+### Encryption Flow
+
+```
+┌──────────────┐
+│  User Action │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────────────────────┐
+│  Smart Contract (FHEVM)      │
+│  1. Generate plaintext value │
+│  2. Encrypt with FHE.asEuint │
+│  3. Store encrypted value    │
+│  4. Set access permissions   │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│  Blockchain Storage          │
+│  - Encrypted euint32 values  │
+│  - No plaintext data exposed │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│  Client-Side Decryption      │
+│  1. Generate keypair         │
+│  2. Sign EIP-712 request     │
+│  3. Call Zama Relayer        │
+│  4. Decrypt with private key │
+│  5. Display to user          │
+└──────────────────────────────┘
+```
+
+### FHE Operations Example
+
+```solidity
+// Encrypting a value
+uint32 weaponPowerPlain = 75;
+euint32 weaponPower = FHE.asEuint32(weaponPowerPlain);
+
+// Adding encrypted values
+euint32 currentCoins = player.coinBalance;
+euint32 loot = FHE.asEuint32(25);
+euint32 newBalance = FHE.add(currentCoins, loot);
+
+// Setting permissions
+FHE.allowThis(weaponPower);  // Contract can use this value
+FHE.allow(weaponPower, msg.sender);  // Player can decrypt this value
+```
+
+---
+
+## Smart Contract API
+
+### Functions
+
+#### `joinGame()`
+Allows a player to join the adventure game.
+
+**Access**: External
+**Modifiers**: None
+**Requirements**:
+- Player must not have already joined
+
+**Effects**:
+- Generates encrypted weapon power (20-100)
+- Initializes encrypted coin balance (100)
+- Sets player as joined
+- Grants decryption permissions to player
+
+**Events**: Emits `PlayerJoined(address player, euint32 weaponPower, euint32 initialCoins)`
+
+```solidity
+function joinGame() external
+```
+
+#### `attackMonster()`
+Allows player to attack a monster and earn encrypted coins.
+
+**Access**: External
+**Returns**: `euint32 coinsLooted` - Encrypted amount of coins gained
+**Requirements**:
+- Player must have joined the game
+
+**Effects**:
+- Generates random encrypted loot (10-50 coins)
+- Adds loot to player's coin balance using FHE addition
+- Grants decryption permissions for loot amount
+
+**Events**: Emits `MonsterDefeated(address player, euint32 coinsLooted, euint32 updatedCoinBalance)`
+
+```solidity
+function attackMonster() external returns (euint32 coinsLooted)
+```
+
+#### `hasJoined(address playerAddress)`
+Checks if a player has joined the game.
+
+**Access**: External view
+**Parameters**:
+- `playerAddress`: Address to check
+**Returns**: `bool` - True if player has joined
+
+```solidity
+function hasJoined(address playerAddress) external view returns (bool)
+```
+
+#### `getWeaponPower(address playerAddress)`
+Retrieves encrypted weapon power for a player.
+
+**Access**: External view
+**Parameters**:
+- `playerAddress`: Player's address
+**Returns**: `euint32` - Encrypted weapon power
+**Requirements**:
+- Player must have joined
+
+```solidity
+function getWeaponPower(address playerAddress) external view returns (euint32)
+```
+
+#### `getCoinBalance(address playerAddress)`
+Retrieves encrypted coin balance for a player.
+
+**Access**: External view
+**Parameters**:
+- `playerAddress`: Player's address
+**Returns**: `euint32` - Encrypted coin balance
+**Requirements**:
+- Player must have joined
+
+```solidity
+function getCoinBalance(address playerAddress) external view returns (euint32)
+```
+
+### Events
+
+```solidity
+event PlayerJoined(
+    address indexed player,
+    euint32 weaponPower,
+    euint32 initialCoins
+);
+
+event MonsterDefeated(
+    address indexed player,
+    euint32 coinsLooted,
+    euint32 updatedCoinBalance
+);
+```
+
+---
+
+## Testing
+
+### Test Structure
+
+The project includes comprehensive tests for both local mock FHEVM and Sepolia testnet:
+
+```
+test/
+├── AdventureGame.ts         # Mock FHEVM tests (fast)
+└── AdventureGameSepolia.ts  # Sepolia integration tests
+```
+
+### Running Tests
+
+**Local tests (Mock FHEVM):**
+```bash
+npm run test
+```
+
+**Sepolia testnet tests:**
+```bash
+npm run test:sepolia
+```
+
+### Test Coverage
+
+Generate a coverage report:
+```bash
+npm run coverage
+```
+
+### What's Tested
+
+- ✅ Player joining mechanics
+- ✅ Initial weapon power generation (range: 20-100)
+- ✅ Initial coin balance (100 coins)
+- ✅ Monster attack functionality
+- ✅ Coin loot generation (range: 10-50)
+- ✅ Encrypted balance updates
+- ✅ Permission system for decryption
+- ✅ Player state queries
+- ✅ Revert conditions (duplicate join, etc.)
+
+---
+
 ## 📁 Project Structure
 
 ```
-fhevm-hardhat-template/
-├── contracts/           # Smart contract source files
-│   └── AdventureGame.sol   # Encrypted adventure game contract
-├── deploy/              # Deployment scripts
-├── tasks/               # Hardhat custom tasks
-├── test/                # Test files
-├── hardhat.config.ts    # Hardhat configuration
-└── package.json         # Dependencies and scripts
+Adventures/
+├── contracts/                    # Smart contract source files
+│   └── AdventureGame.sol        # Main encrypted game contract
+├── deploy/                       # Deployment scripts
+│   └── deploy.ts                # Hardhat-deploy configuration
+├── tasks/                        # Custom Hardhat tasks
+│   ├── accounts.ts              # List available accounts
+│   └── adventure.ts             # Game interaction tasks
+├── test/                         # Test suites
+│   ├── AdventureGame.ts         # Local mock tests
+│   └── AdventureGameSepolia.ts  # Sepolia integration tests
+├── home/                         # Frontend React application
+│   ├── src/
+│   │   ├── components/          # React components
+│   │   │   ├── AdventureApp.tsx # Main game UI
+│   │   │   └── Header.tsx       # Navigation bar
+│   │   ├── config/              # Configuration files
+│   │   │   ├── contract.ts      # Contract ABI & address
+│   │   │   └── wagmi.ts         # Web3 provider config
+│   │   ├── hooks/               # Custom React hooks
+│   │   │   ├── useEthersSigner.ts
+│   │   │   └── useZamaInstance.ts
+│   │   └── styles/              # CSS stylesheets
+│   └── package.json             # Frontend dependencies
+├── hardhat.config.ts            # Hardhat configuration
+├── package.json                 # Backend dependencies
+├── tsconfig.json                # TypeScript configuration
+└── README.md                    # This file
 ```
 
 ## 📜 Available Scripts
