@@ -670,31 +670,375 @@ Adventures/
 
 ## 📜 Available Scripts
 
-| Script             | Description              |
-| ------------------ | ------------------------ |
-| `npm run compile`  | Compile all contracts    |
-| `npm run test`     | Run all tests            |
-| `npm run coverage` | Generate coverage report |
-| `npm run lint`     | Run linting checks       |
-| `npm run clean`    | Clean build artifacts    |
+### Backend Scripts
 
-## 📚 Documentation
+| Script | Description |
+|--------|-------------|
+| `npm run compile` | Compile all smart contracts |
+| `npm run test` | Run tests on mock FHEVM |
+| `npm run test:sepolia` | Run tests on Sepolia testnet |
+| `npm run coverage` | Generate test coverage report |
+| `npm run lint` | Run linting checks (Solidity + TypeScript) |
+| `npm run lint:sol` | Run Solidity linting only |
+| `npm run lint:ts` | Run TypeScript linting only |
+| `npm run prettier:check` | Check code formatting |
+| `npm run prettier:write` | Auto-fix code formatting |
+| `npm run clean` | Clean build artifacts and cache |
+| `npm run typechain` | Generate TypeScript bindings |
+| `npm run chain` | Start local Hardhat node |
+| `npm run deploy:localhost` | Deploy to local network |
+| `npm run deploy:sepolia` | Deploy to Sepolia testnet |
+| `npm run verify:sepolia` | Verify contract on Etherscan |
 
-- [FHEVM Documentation](https://docs.zama.ai/fhevm)
-- [FHEVM Hardhat Setup Guide](https://docs.zama.ai/protocol/solidity-guides/getting-started/setup)
-- [FHEVM Testing Guide](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat/write_test)
-- [FHEVM Hardhat Plugin](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat)
+### Frontend Scripts (in `home/` directory)
 
-## 📄 License
-
-This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/zama-ai/fhevm/issues)
-- **Documentation**: [FHEVM Docs](https://docs.zama.ai)
-- **Community**: [Zama Discord](https://discord.gg/zama)
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint checks |
 
 ---
 
-**Built with ❤️ by the Zama team**
+## Future Roadmap
+
+### Phase 1: Enhanced Gameplay (Q1 2025)
+
+#### Combat System Expansion
+- **Multiple Monster Types**: Introduce different monster tiers with varying difficulties
+  - Common monsters (easy, low rewards)
+  - Rare monsters (medium difficulty, better loot)
+  - Legendary bosses (hard, premium rewards)
+- **Combat Mechanics**: Weapon power affects success rate and damage
+- **Health System**: Add encrypted player health points
+- **Potion System**: Healing items and buffs
+
+#### Inventory System
+- **Equipment Slots**: Weapons, armor, accessories
+- **Item Rarity**: Common, rare, epic, legendary items
+- **Item Upgrades**: Enhance equipment using coins
+- **Trading System**: Peer-to-peer encrypted item trading
+
+### Phase 2: Social & Multiplayer (Q2 2025)
+
+#### Multiplayer Features
+- **Co-op Raids**: Team up to fight powerful bosses
+- **Guild System**: Create and join guilds with shared treasuries
+- **Leaderboards**: Privacy-preserving ranking system
+- **PvP Arena**: Encrypted player-vs-player battles
+
+#### Social Integration
+- **Friend System**: Add friends and view their public profiles
+- **Chat System**: In-game messaging with optional encryption
+- **Achievements**: Unlock badges and titles
+- **Quest System**: Daily and weekly challenges
+
+### Phase 3: Economy & NFTs (Q3 2025)
+
+#### NFT Integration
+- **Weapon NFTs**: Convert encrypted weapons to tradeable NFTs
+- **Collectible Items**: Unique cosmetics and rare items
+- **Land Ownership**: Own territories in the game world
+- **Marketplace**: Decentralized exchange for all items
+
+#### DeFi Integration
+- **Staking**: Stake coins to earn passive rewards
+- **Liquidity Pools**: Provide liquidity for in-game tokens
+- **Yield Farming**: Earn rewards through gameplay
+- **Cross-Game Currency**: Interoperable tokens across multiple games
+
+### Phase 4: Expansion & Scaling (Q4 2025)
+
+#### Technical Improvements
+- **Layer 2 Integration**: Deploy to Arbitrum/Optimism for lower gas fees
+- **Performance Optimization**: Batch operations and gas reduction
+- **Mobile Support**: React Native mobile application
+- **Offline Mode**: Cache game state for offline play
+
+#### Content Expansion
+- **Story Mode**: Narrative-driven campaign with chapters
+- **Procedural Dungeons**: Randomly generated dungeons
+- **Seasonal Events**: Time-limited events and rewards
+- **Community Content**: User-generated quests and items
+
+#### Advanced Privacy Features
+- **ZK Proofs Integration**: Combine FHE with zero-knowledge proofs
+- **Anonymous Gameplay**: Optional anonymous player mode
+- **Private Tournaments**: Encrypted competitive events
+- **Confidential Auctions**: Sealed-bid auctions for rare items
+
+### Phase 5: Ecosystem Growth (2026)
+
+#### Developer Tools
+- **SDK Release**: Developer toolkit for building FHE games
+- **Plugin System**: Allow third-party plugins and mods
+- **API Platform**: Public APIs for game integration
+- **Documentation Hub**: Comprehensive developer guides
+
+#### Governance
+- **DAO Formation**: Community-governed game development
+- **Voting System**: On-chain voting for game features
+- **Treasury Management**: Community-managed funds
+- **Grant Program**: Fund community developers
+
+#### Partnerships
+- **Cross-Game Assets**: Asset portability across partner games
+- **Brand Collaborations**: Licensed content and themes
+- **Educational Partnerships**: Blockchain gaming courses
+- **Research Initiatives**: Academic collaborations on FHE gaming
+
+---
+
+## Security Considerations
+
+### Smart Contract Security
+
+- **Audited Code**: Smart contracts should be audited before mainnet deployment
+- **Reentrancy Protection**: All state changes follow checks-effects-interactions pattern
+- **Access Control**: Proper permission management for FHE operations
+- **Upgrade Strategy**: Consider proxy patterns for future upgrades
+
+### Privacy Guarantees
+
+- **Encrypted Storage**: All sensitive data stored as FHE ciphertexts
+- **Permission System**: Strict access control for decryption
+- **Client-Side Decryption**: Private keys never leave user's device
+- **No Data Leakage**: Events and logs contain only encrypted values
+
+### Best Practices
+
+- **Private Key Management**: Never commit private keys to repositories
+- **Environment Variables**: Use `.env` files for sensitive configuration
+- **Network Verification**: Always verify you're on the correct network
+- **Gas Estimation**: Monitor gas costs for FHE operations
+- **Rate Limiting**: Implement cooldowns to prevent spam attacks
+
+---
+
+## Contributing
+
+We welcome contributions from the community! Here's how you can help:
+
+### Ways to Contribute
+
+1. **Report Bugs**: Submit issues for bugs you encounter
+2. **Suggest Features**: Propose new features or improvements
+3. **Submit Pull Requests**: Fix bugs or implement features
+4. **Improve Documentation**: Help make our docs better
+5. **Share Feedback**: Tell us about your experience
+
+### Development Workflow
+
+1. **Fork the repository**
+
+   ```bash
+   git fork https://github.com/yourusername/Adventures.git
+   ```
+
+2. **Create a feature branch**
+
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+
+3. **Make your changes**
+
+   - Write clean, documented code
+   - Follow the existing code style
+   - Add tests for new features
+   - Update documentation as needed
+
+4. **Run tests and linting**
+
+   ```bash
+   npm run lint
+   npm run test
+   npm run prettier:write
+   ```
+
+5. **Commit your changes**
+
+   ```bash
+   git commit -m "feat: add amazing feature"
+   ```
+
+   Follow [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+6. **Push to your fork**
+
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+
+7. **Open a Pull Request**
+
+   - Provide a clear description of your changes
+   - Reference any related issues
+   - Include screenshots for UI changes
+   - Wait for review and address feedback
+
+### Coding Standards
+
+- **Solidity**: Follow [Solidity Style Guide](https://docs.soliditylang.org/en/latest/style-guide.html)
+- **TypeScript**: Use strict type checking
+- **React**: Follow [React Best Practices](https://react.dev/learn)
+- **Testing**: Maintain >80% test coverage
+- **Documentation**: Document all public functions
+
+### Code of Conduct
+
+- Be respectful and inclusive
+- Provide constructive feedback
+- Focus on what's best for the community
+- Show empathy towards other contributors
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Problem**: Contract deployment fails with "insufficient funds"
+- **Solution**: Ensure you have enough Sepolia ETH for gas fees
+
+**Problem**: Frontend shows "Wrong Network"
+- **Solution**: Switch your wallet to Sepolia testnet
+
+**Problem**: Decryption takes too long or fails
+- **Solution**:
+  - Check your internet connection
+  - Verify Zama Relayer is accessible
+  - Ensure you signed the EIP-712 request
+
+**Problem**: Compilation errors with FHEVM
+- **Solution**:
+  - Clear cache: `npm run clean`
+  - Reinstall dependencies: `rm -rf node_modules && npm install`
+  - Check Node.js version (must be >=20)
+
+**Problem**: Tests fail on Sepolia
+- **Solution**:
+  - Ensure contract is deployed
+  - Check INFURA_API_KEY is valid
+  - Verify you have Sepolia ETH
+
+### Getting Help
+
+If you encounter issues not covered here:
+
+1. Check existing [GitHub Issues](https://github.com/yourusername/Adventures/issues)
+2. Search [Zama Documentation](https://docs.zama.ai)
+3. Ask in [Zama Discord](https://discord.gg/zama)
+4. Create a new issue with:
+   - Clear description of the problem
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Environment details (Node version, OS, etc.)
+
+---
+
+## Performance & Gas Costs
+
+### FHE Operation Costs
+
+FHE operations are more gas-intensive than regular operations:
+
+| Operation | Approximate Gas Cost |
+|-----------|---------------------|
+| `joinGame()` | ~300,000 - 500,000 gas |
+| `attackMonster()` | ~200,000 - 400,000 gas |
+| FHE.add() | ~50,000 - 100,000 gas |
+| FHE.asEuint32() | ~30,000 - 50,000 gas |
+
+### Optimization Tips
+
+- **Batch Operations**: Combine multiple actions when possible
+- **State Minimization**: Store only essential encrypted data
+- **Caching**: Use frontend caching to reduce blockchain reads
+- **L2 Deployment**: Consider L2 networks for lower gas fees (future)
+
+---
+
+## Acknowledgments
+
+This project was made possible by:
+
+- **Zama**: For developing FHEVM and providing excellent documentation
+- **Ethereum Foundation**: For the Ethereum blockchain platform
+- **Hardhat**: For the development environment
+- **RainbowKit**: For wallet connection UI
+- **Wagmi**: For React hooks for Ethereum
+- **The Web3 Community**: For continuous support and feedback
+
+Special thanks to all contributors and early testers!
+
+---
+
+## License
+
+This project is licensed under the **BSD-3-Clause-Clear License**.
+
+```
+Copyright (c) 2025, Adventures Team
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the conditions specified
+in the LICENSE file are met.
+```
+
+See the [LICENSE](LICENSE) file for complete details.
+
+---
+
+## 📚 Documentation & Resources
+
+### Official Documentation
+
+- **FHEVM Documentation**: [https://docs.zama.ai/fhevm](https://docs.zama.ai/fhevm)
+- **Hardhat Setup Guide**: [https://docs.zama.ai/protocol/solidity-guides/getting-started/setup](https://docs.zama.ai/protocol/solidity-guides/getting-started/setup)
+- **FHEVM Testing Guide**: [https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat/write_test](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat/write_test)
+- **Hardhat Plugin Docs**: [https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat)
+
+### Learning Resources
+
+- **Zama Blog**: [https://www.zama.ai/blog](https://www.zama.ai/blog)
+- **Ethereum Dev Docs**: [https://ethereum.org/developers](https://ethereum.org/developers)
+- **Hardhat Tutorial**: [https://hardhat.org/tutorial](https://hardhat.org/tutorial)
+- **React Documentation**: [https://react.dev](https://react.dev)
+
+### Community
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/yourusername/Adventures/issues)
+- **Zama Discord**: [https://discord.gg/zama](https://discord.gg/zama)
+- **Twitter**: Follow [@zama_fhe](https://twitter.com/zama_fhe) for updates
+- **YouTube**: [Zama Channel](https://www.youtube.com/@zama_fhe) for tutorials
+
+---
+
+## Support & Contact
+
+### Get Help
+
+- **Bug Reports**: [GitHub Issues](https://github.com/yourusername/Adventures/issues/new?template=bug_report.md)
+- **Feature Requests**: [GitHub Issues](https://github.com/yourusername/Adventures/issues/new?template=feature_request.md)
+- **General Questions**: [GitHub Discussions](https://github.com/yourusername/Adventures/discussions)
+
+### Stay Updated
+
+- **Star this repository** to get notifications about updates
+- **Watch releases** to be notified of new versions
+- **Follow the project** on GitHub for latest developments
+
+---
+
+<div align="center">
+
+**Built with ❤️ using Zama's FHEVM**
+
+[Report Bug](https://github.com/yourusername/Adventures/issues) · [Request Feature](https://github.com/yourusername/Adventures/issues) · [Documentation](https://docs.zama.ai)
+
+⭐ **Star this repo if you find it helpful!** ⭐
+
+</div>
