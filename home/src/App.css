@@ -1,0 +1,7 @@
+.app-container {
+  min-height: 100vh;
+  padding: 48px 16px 64px;
+  display: flex;
+  justify-content: center;
+  background: radial-gradient(circle at top, #f0f4ff 0%, #f9fafb 55%, #eef2f7 100%);
+}
